@@ -72,19 +72,22 @@ BEGIN
             c.ordinal_position
         ;
 
-        select 
-            'CREATE TABLE IF NOT EXISTS '
-            || v_table_result
-            || ' ( '
-            || STRING_AGG(
-                tts.column_declare,
-                ' , '
-            )
-            || ' );'
-        from 
-            tmp_table_structure tts
-        into 
-            v_result;
+        if (select count(1) from tmp_table_structure) > 0 then
+            select 
+                'CREATE TABLE IF NOT EXISTS '
+                || v_table_result
+                || ' ( '
+                || STRING_AGG(
+                    tts.column_declare,
+                    ' , '
+                )
+                || ' );'
+            from 
+                tmp_table_structure tts
+            into 
+                v_result;
+        end if;
+        
     end if;
 
     return v_result;
